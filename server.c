@@ -2,11 +2,10 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netinet/ip.h>
-#include <stdlib.h>
 
 int main() {
 	int sockfd;
-		
+
 	struct sockaddr_in { 
 		short sin_family; // e.g. AF_INET 
 		unsigned short sin_port; // e.g. htons(3490)‏ 
@@ -23,7 +22,7 @@ int main() {
 	// Create socket
 	if ((sockfd = socket (AF_INET, SOCK_STREAM, 0) < 0)) {
 		printf ("Error while creating the socket\n");
-		exit(1);
+		return -1;
 	};
 
 	bzero (&my_addr, sizeof(my_addr));
@@ -33,13 +32,24 @@ int main() {
 
  
 	// Bind
-	int bind(int sockfd, const struct sockaddr *addr, socklen_t addrlen);
+	if ((bind(int sockfd, const struct sockaddr *addr, socklen_t addrlen) > 0)) {
+		printf("error while binding");
+		return -1;
+	}
 	
 	// Listen
-	int listen (int sockfd, int backlog);
+	if ((listen (int sockfd, int backlog) > 0)) {
+		printf("failed to listen");
+		return -1;
+	}
 	
 	// Accept
-	int accept (int sockfd, struct sockaddr *fromaddr, socklen_t *addrlen);
+	if ((accept (int sockfd, struct sockaddr *fromaddr, socklen_t *addrlen) > 0)) {
+		printf("failed to accept");
+		return -1;
+	}
+	
 
+	close(sockfd);
 	return 0;
 }
